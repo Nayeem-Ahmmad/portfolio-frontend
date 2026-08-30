@@ -1,8 +1,9 @@
-import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiMail, FiFacebook } from 'react-icons/fi';
+import { BsWhatsapp } from 'react-icons/bs';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import { EMAIL, SOCIAL_LINKS } from '../../utils/socialLinks';
 
-const ICONS = { github: FiGithub, linkedin: FiLinkedin };
+const ICONS = { github: FiGithub, linkedin: FiLinkedin, facebook: FiFacebook, whatsapp: BsWhatsapp };
 
 export default function Contact() {
   return (

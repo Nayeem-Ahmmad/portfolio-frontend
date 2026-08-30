@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'framer-motion';
 import Sky from './layers/Sky';
 import Mountains from './layers/Mountains';
 import Clouds from './layers/Clouds';
@@ -12,13 +13,20 @@ import { getTimeOfDayStyles, getTimeOfDayLabel } from '../utils/timeOfDay';
 //     single cinematic color-grade overlay that tints the whole scene
 //     (Phase 05), instead of manually recoloring every ground/mountain
 //     element by hand.
+//
+// Phase 11: when the visitor has prefers-reduced-motion set, the camera
+// pan is switched off entirely (offsets pinned to 0) — the layers hold
+// still. The time-of-day color grading keeps working, since a gradual
+// color shift isn't the kind of motion that rule is meant to suppress,
+// and losing the whole signature feature would be a worse trade-off.
 export default function GardenScene({ progress = 0 }) {
+  const reduceMotion = useReducedMotion();
   const camera = getCameraPosition(progress);
   const tod = getTimeOfDayStyles(progress);
   const centerX = 720;
   const centerY = 500;
-  const offsetX = camera.x - centerX;
-  const offsetY = camera.y - centerY;
+  const offsetX = reduceMotion ? 0 : camera.x - centerX;
+  const offsetY = reduceMotion ? 0 : camera.y - centerY;
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">

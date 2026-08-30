@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
 
@@ -13,6 +14,11 @@ import { FiGithub, FiExternalLink } from 'react-icons/fi';
 // prefers-reduced-motion — useReducedMotion() disables the motion props
 // entirely rather than just speeding them up, so reduced-motion users get
 // the content instantly with no movement at all.
+//
+// Phase 12: if a screenshot URL is provided but actually fails to load
+// (moved/deleted file, bad path), onError flips imageFailed and the whole
+// image block disappears — the card falls back to its text-only layout
+// instead of showing the browser's broken-image icon.
 export default function ProjectCard({
   title,
   description,
@@ -24,6 +30,7 @@ export default function ProjectCard({
   screenshot,
 }) {
   const reduceMotion = useReducedMotion();
+  const [imageFailed, setImageFailed] = useState(false);
 
   return (
     <motion.div
@@ -34,13 +41,14 @@ export default function ProjectCard({
       transition={{ duration: 0.5, ease: 'easeOut' }}
       whileHover={reduceMotion ? undefined : { y: -6 }}
     >
-      {screenshot && (
+      {screenshot && !imageFailed && (
         <div className="overflow-hidden">
           <motion.img
             src={screenshot}
             alt={`${title} screenshot`}
             className="w-full h-44 object-cover"
             loading="lazy"
+            onError={() => setImageFailed(true)}
             whileHover={reduceMotion ? undefined : { scale: 1.08 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           />

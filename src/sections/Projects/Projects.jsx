@@ -1,6 +1,6 @@
 import ProjectCard from '../../components/ProjectCard/ProjectCard';
-import wearifyShot from '../../assets/images/wearify.png';
-import jobPortalShot from '../../assets/images/job-portal-bd.png';
+import wearifyShot from '../../assets/images/wearify.webp';
+import jobPortalShot from '../../assets/images/job-portal-bd.webp';
 
 const PROJECTS = [
   {

@@ -1,7 +1,8 @@
-import { FiGithub, FiLinkedin, FiDownload } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiDownload, FiFacebook } from 'react-icons/fi';
+import { BsWhatsapp } from 'react-icons/bs';
 import { SOCIAL_LINKS, RESUME_URL } from '../../utils/socialLinks';
 
-const ICONS = { github: FiGithub, linkedin: FiLinkedin };
+const ICONS = { github: FiGithub, linkedin: FiLinkedin, facebook: FiFacebook, whatsapp: BsWhatsapp };
 
 export default function Home() {
   const scrollToAbout = () => {

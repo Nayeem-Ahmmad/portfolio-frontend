@@ -1,15 +1,17 @@
 import { useState } from 'react';
+import { sendContactMessage } from '../../services/api';
 
 const initialState = { name: '', email: '', subject: '', message: '' };
 
-// Phase 06: form UI + local validation only. Wiring this to a real
-// POST /api/contact/ happens in Phase 10, once the Django backend and its
-// endpoint exist (Phase 08–09) — for now submitting just simulates success
-// so every state (idle/submitting/success/validation error) is already in
-// place and doesn't need to change later.
+// Phase 10: wired to the real backend. `status` covers idle / submitting /
+// success / error. Client-side validation still runs first (instant
+// feedback, no round trip for an empty field) — but if the server also
+// rejects something (e.g. its own message-length rule), those come back
+// as field-level errors from DRF and get mapped into the same `errors`
+// state, so the UI doesn't need two different error-rendering paths.
 export default function ContactForm() {
   const [values, setValues] = useState(initialState);
-  const [status, setStatus] = useState('idle'); // idle | submitting | success
+  const [status, setStatus] = useState('idle'); // idle | submitting | success | error
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
@@ -30,18 +32,36 @@ export default function ContactForm() {
     return next;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
     setStatus('submitting');
-    // TODO (Phase 10): replace with a real call through src/services/api.js.
-    setTimeout(() => {
+    try {
+      await sendContactMessage(values);
       setStatus('success');
       setValues(initialState);
-    }, 600);
+      setErrors({});
+    } catch (err) {
+      const fieldErrors = err.response?.data;
+      if (err.response?.status === 400 && fieldErrors) {
+        // DRF sends { field: ["message"] } — flatten each to one string.
+        const mapped = Object.fromEntries(
+          Object.entries(fieldErrors).map(([field, msgs]) => [
+            field,
+            Array.isArray(msgs) ? msgs[0] : String(msgs),
+          ])
+        );
+        setErrors(mapped);
+        setStatus('idle');
+      } else {
+        // Network error, 429 (throttled), or 5xx — never show raw backend
+        // detail to the visitor, just a calm generic message.
+        setStatus('error');
+      }
+    }
   };
 
   if (status === 'success') {
@@ -128,6 +148,12 @@ export default function ContactForm() {
           </p>
         )}
       </div>
+
+      {status === 'error' && (
+        <p className="text-xs text-red-400">
+          Something went wrong sending your message. Please try again in a moment.
+        </p>
+      )}
 
       <button
         type="submit"

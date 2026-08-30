@@ -30,10 +30,10 @@ export default function NavDots({ activeId }) {
             onClick={() => handleClick(index)}
             aria-current={isActive ? 'true' : undefined}
             aria-label={point.label}
-            className="group flex items-center gap-3 justify-end"
+            className="group flex items-center gap-3 justify-end p-2 -m-2"
           >
             <span
-              className={`text-xs uppercase tracking-wide transition-opacity ${
+              className={`hidden sm:inline text-xs uppercase tracking-wide transition-opacity ${
                 isActive ? 'opacity-100 text-paper' : 'opacity-0 group-hover:opacity-70 text-fog'
               }`}
             >
@@ -43,7 +43,7 @@ export default function NavDots({ activeId }) {
               className={`block rounded-full transition-all ${
                 isActive
                   ? 'w-3 h-3 bg-moss'
-                  : 'w-2 h-2 bg-fog/50 group-hover:bg-fog'
+                  : 'w-2.5 h-2.5 bg-fog/50 group-hover:bg-fog'
               }`}
             />
           </button>
