@@ -1,4 +1,5 @@
 import { pathPoints } from '../pathPoints';
+import Fireflies from './Fireflies';
 
 // Foreground: rolling ground, the winding garden path, a small house,
 // a treeline, a pond, and a few flower clusters. Journey stop positions
@@ -24,13 +25,25 @@ function FlowerCluster({ x, y }) {
   );
 }
 
-function House({ x, y }) {
+function House({ x, y, windowGlowOpacity = 0.9, shadowLength = 0.3 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
+      {/* Ground shadow — a simple stand-in for the "long shadows" the
+          brief asks for at morning/sunset. Elongates as the sun gets
+          lower (see utils/timeOfDay's shadow.length); intentionally kept
+          to just this one prominent object rather than every tree, to
+          avoid over-engineering the effect. */}
+      <ellipse
+        cx={-30 - shadowLength * 40}
+        cy={40}
+        rx={30 + shadowLength * 50}
+        ry={8}
+        fill="rgba(0,0,0,0.25)"
+      />
       <rect x="-38" y="-4" width="76" height="46" fill="var(--house-color)" rx="2" />
       <polygon points="-46,-4 0,-40 46,-4" fill="var(--house-roof)" />
       <rect x="-8" y="16" width="16" height="26" fill="#0e0c0b" />
-      <rect x="14" y="6" width="12" height="12" fill="var(--window-glow)" opacity="0.9" />
+      <rect x="14" y="6" width="12" height="12" fill="var(--window-glow)" opacity={windowGlowOpacity} />
     </g>
   );
 }
@@ -48,7 +61,7 @@ function Bird({ x, y }) {
   );
 }
 
-export default function GroundScene() {
+export default function GroundScene({ tod }) {
   return (
     <g>
       {/* Rolling hills / grass base */}
@@ -95,7 +108,12 @@ export default function GroundScene() {
       <ellipse cx="200" cy="740" rx="70" ry="24" fill="none" stroke="var(--cloud-color)" strokeWidth="1" opacity="0.3" />
 
       {/* House marks the Home location */}
-      <House x={pathPoints[0].x + 90} y={pathPoints[0].y - 20} />
+      <House
+        x={pathPoints[0].x + 90}
+        y={pathPoints[0].y - 20}
+        windowGlowOpacity={tod.windowGlow.opacity}
+        shadowLength={tod.shadow.length}
+      />
 
       {/* Treeline, sparse by design */}
       <Tree x={pathPoints[1].x - 60} y={pathPoints[1].y + 10} scale={1.1} />
@@ -110,6 +128,9 @@ export default function GroundScene() {
       {/* Two birds for quiet atmosphere */}
       <Bird x={860} y={220} />
       <Bird x={920} y={260} />
+
+      {/* Fireflies fade in as the garden moves into dusk/night */}
+      <Fireflies opacity={tod.fireflies.opacity} />
     </g>
   );
 }

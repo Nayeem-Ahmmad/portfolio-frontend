@@ -1,6 +1,7 @@
 // A handful of soft clouds. Kept sparse per the brief's "don't overcrowd"
-// rule. Phase 06/animation pass will drift these slowly and fade their
-// opacity based on time-of-day (they thin out toward sunset/night).
+// rule. `opacity` is the time-of-day cloud multiplier from
+// utils/timeOfDay — clouds fade thin toward sunset/night, same as a real
+// sky, while each cloud keeps its own relative opacity for depth.
 function Cloud({ x, y, scale = 1, opacity = 1 }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${scale})`} opacity={opacity}>
@@ -11,9 +12,9 @@ function Cloud({ x, y, scale = 1, opacity = 1 }) {
   );
 }
 
-export default function Clouds() {
+export default function Clouds({ opacity = 1 }) {
   return (
-    <g filter="url(#cloudBlur)">
+    <g opacity={opacity} filter="url(#cloudBlur)">
       <defs>
         <filter id="cloudBlur" x="-20%" y="-20%" width="140%" height="140%">
           <feGaussianBlur stdDeviation="3" />
