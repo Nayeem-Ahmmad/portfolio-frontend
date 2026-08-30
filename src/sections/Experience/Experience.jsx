@@ -27,6 +27,32 @@ const MILESTONES = [
   },
 ];
 
+// Real roles from Nayeem's resume — kept as a separate block rather than
+// folded into the growth-timeline metaphor above, since the two tell
+// different stories (personal learning arc vs. actual employment).
+const ROLES = [
+  {
+    company: 'Kahf Bangladesh',
+    title: 'Software Support · Moderation Specialist',
+    period: 'Jun 2025 – Jun 2026',
+    bullets: [
+      'Moderated content and supported community quality on the Hikma platform.',
+      'Provided technical support for the Kahf Guard product.',
+      'Collaborated with the dev team to identify and reproduce bugs.',
+    ],
+  },
+  {
+    company: 'Shohoj Coding / International Standard University',
+    title: 'Programming Mentor (C++)',
+    period: 'Jul 2025 – Present',
+    bullets: [
+      'Mentoring junior students in C/C++, data structures, and algorithms.',
+      'Official programming mentor at ISU, running contest-prep sessions.',
+      'Helping students build strong OOP, memory management, and STL foundations.',
+    ],
+  },
+];
+
 export default function Experience() {
   return (
     <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-8 py-8 max-w-lg">
@@ -50,6 +76,26 @@ export default function Experience() {
           </li>
         ))}
       </ol>
+
+      {/* Real professional experience — separate from the growth metaphor above */}
+      <div className="mt-8 pt-6 border-t border-fog/10">
+        <p className="uppercase tracking-[0.2em] text-xs text-moss mb-4">Professional Experience</p>
+        <div className="space-y-5">
+          {ROLES.map((role) => (
+            <div key={role.company}>
+              <p className="text-paper font-display text-base">{role.title}</p>
+              <p className="text-xs text-fog/80">
+                {role.company} · {role.period}
+              </p>
+              <ul className="mt-2 text-fog text-sm space-y-1 list-disc list-inside">
+                {role.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

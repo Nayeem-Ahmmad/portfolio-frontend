@@ -1,9 +1,11 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { FiGithub, FiExternalLink } from 'react-icons/fi';
 
-// One project "location" in the garden. Screenshot/GitHub/live-demo are
-// all optional — if a project doesn't have one yet, the card just skips
-// that slot instead of showing a broken image or a dead link.
+// One project "location" in the garden. Both Wearify and Job Portal BD use
+// separate backend/frontend repos, so this card links each one individually
+// (matching the "Backend — Frontend — Live Demo" pattern on the resume)
+// instead of a single generic "Code" link. Any link that isn't provided is
+// just skipped — never a dead link or broken image.
 //
 // Phase 07 polish: the card fades/lifts into place the first time it
 // scrolls into view, lifts slightly and gains a soft moss ring on hover,
@@ -16,7 +18,8 @@ export default function ProjectCard({
   description,
   tech,
   features,
-  githubUrl,
+  backendUrl,
+  frontendUrl,
   liveUrl,
   screenshot,
 }) {
@@ -66,15 +69,25 @@ export default function ProjectCard({
           </ul>
         )}
 
-        <div className="flex items-center gap-4 mt-5">
-          {githubUrl && (
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-5">
+          {backendUrl && (
             <a
-              href={githubUrl}
+              href={backendUrl}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-paper hover:text-moss transition-colors"
             >
-              <FiGithub aria-hidden="true" /> Code
+              <FiGithub aria-hidden="true" /> Backend
+            </a>
+          )}
+          {frontendUrl && (
+            <a
+              href={frontendUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-paper hover:text-moss transition-colors"
+            >
+              <FiGithub aria-hidden="true" /> Frontend
             </a>
           )}
           {liveUrl && (

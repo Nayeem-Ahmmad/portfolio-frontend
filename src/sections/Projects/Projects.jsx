@@ -2,10 +2,6 @@ import ProjectCard from '../../components/ProjectCard/ProjectCard';
 import wearifyShot from '../../assets/images/wearify.png';
 import jobPortalShot from '../../assets/images/job-portal-bd.png';
 
-// TODO: fill in githubUrl / liveUrl for each project once they're ready —
-// left blank so ProjectCard just omits whatever isn't provided instead of
-// showing a dead link. Add more projects here later (Phase 08+ can move
-// this list to the Django API instead of hardcoding it).
 const PROJECTS = [
   {
     title: 'Wearify',
@@ -19,8 +15,9 @@ const PROJECTS = [
       'Flash sale',
       'Email system',
     ],
-    githubUrl: '',
-    liveUrl: '',
+    backendUrl: 'https://github.com/Nayeem-Ahmmad/wearify-backend',
+    frontendUrl: 'https://github.com/Nayeem-Ahmmad/wearify-frontend',
+    liveUrl: 'https://wearifysells.vercel.app/',
     screenshot: wearifyShot,
   },
   {
@@ -34,8 +31,9 @@ const PROJECTS = [
       'Notifications',
       'Admin functionality',
     ],
-    githubUrl: '',
-    liveUrl: '',
+    backendUrl: 'https://github.com/Nayeem-Ahmmad/job_portal',
+    frontendUrl: 'https://github.com/Nayeem-Ahmmad/job-portal-frontend',
+    liveUrl: 'https://job-portal-frontend-plum-rho.vercel.app/',
     screenshot: jobPortalShot,
   },
 ];
