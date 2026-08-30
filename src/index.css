@@ -2,19 +2,35 @@
 
 /* ---------------------------------------------------------
    Design tokens — Nayeem's Garden
-   Referenced directly as CSS vars, and exposed to Tailwind
-   utilities (bg-ink, text-fog, etc.) via @theme below.
 --------------------------------------------------------- */
 :root {
-  --color-ink: #0a0a0a;       /* page background */
-  --color-panel: #111111;     /* card / raised surface */
-  --color-fog: #b0b0b0;       /* secondary text */
-  --color-paper: #ffffff;     /* primary text */
-  --color-moss: #4ade80;      /* single accent — garden green */
-  --color-moss-dim: #1f2e22;  /* accent used at low opacity for glows/borders */
+  --color-ink: #0a0a0a;
+  --color-panel: #111111;
+  --color-fog: #b0b0b0;
+  --color-paper: #ffffff;
+  --color-moss: #4ade80;
+  --color-moss-dim: #1f2e22;
 
   --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
+
+  /* Garden scene palette — Phase 03 static baseline ("morning") */
+  --sky-top: #2b3a67;
+  --sky-mid: #7d6b9e;
+  --sky-bottom: #f3b990;
+  --sun-color: #ffe3ac;
+  --sun-glow: rgba(255, 227, 172, 0.35);
+  --mountain-far: #4b5177;
+  --mountain-near: #38406a;
+  --hill-color: #23492f;
+  --tree-color: #16321f;
+  --ground-color: #1c3620;
+  --path-color: #d8c3a1;
+  --house-color: #2a2523;
+  --house-roof: #6b3f34;
+  --window-glow: #ffd479;
+  --water-color: #3c5a68;
+  --cloud-color: rgba(255, 255, 255, 0.55);
 }
 
 @theme {
@@ -57,8 +73,6 @@ a, button {
   font-family: inherit;
 }
 
-/* Respect reduced-motion at the base level; individual GSAP/Framer
-   animations will also check this in JS before running. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
