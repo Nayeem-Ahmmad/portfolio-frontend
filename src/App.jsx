@@ -1,14 +1,35 @@
 import GardenScene from './garden/GardenScene';
+import Navbar from './components/Navbar/Navbar';
 import NavDots from './components/Navigation/NavDots';
 import useScrollProgress from './hooks/useScrollProgress';
 import { getActiveSectionId } from './utils/cameraPath';
 import { pathPoints } from './garden/pathPoints';
 
-// Phase 04: the garden becomes the navigation. Content sections are still
-// placeholders (real copy lands in Phase 06) — this phase proves the
-// mechanics: native scroll drives a smooth 0–1 progress value, that value
-// pans the fixed garden background, and both the nav dots and the visible
-// section highlight agree on which stop is "active" at any given moment.
+import Home from './sections/Home/Home';
+import About from './sections/About/About';
+import Skills from './sections/Skills/Skills';
+import Experience from './sections/Experience/Experience';
+import Projects from './sections/Projects/Projects';
+import Achievements from './sections/Achievements/Achievements';
+import Contact from './sections/Contact/Contact';
+
+// Phase 06: the garden's journey stops now hold real portfolio content
+// instead of placeholders. Layout/positioning (ids, section spacing,
+// horizontal padding) stays here in App.jsx; each section owns its own
+// inner content and panel width, since Skills/Projects need far more room
+// than Home/About/Contact do. Sections use min-h-screen (not a fixed
+// h-screen) so content that runs long — the Skills grid, the Projects
+// list — can grow instead of clipping.
+const SECTION_COMPONENTS = {
+  home: Home,
+  about: About,
+  skills: Skills,
+  experience: Experience,
+  projects: Projects,
+  achievements: Achievements,
+  contact: Contact,
+};
+
 function App() {
   const progress = useScrollProgress();
   const activeId = getActiveSectionId(progress);
@@ -17,6 +38,7 @@ function App() {
   return (
     <>
       <GardenScene progress={progress} />
+      <Navbar />
       <NavDots activeId={activeId} />
 
       {showScrollHint && (
@@ -26,25 +48,18 @@ function App() {
       )}
 
       <main className="relative z-10">
-        {pathPoints.map((point) => (
-          <section
-            key={point.id}
-            id={point.id}
-            className="h-screen flex items-center justify-start px-10 md:px-20"
-          >
-            <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-8 py-6 max-w-md">
-              <p className="uppercase tracking-[0.2em] text-xs text-moss mb-2">
-                {point.label}
-              </p>
-              <h2 className="text-2xl md:text-3xl font-display text-paper">
-                {point.label} section placeholder
-              </h2>
-              <p className="text-fog mt-2 text-sm">
-                Real content for this section arrives in Phase 06.
-              </p>
-            </div>
-          </section>
-        ))}
+        {pathPoints.map((point) => {
+          const Section = SECTION_COMPONENTS[point.id];
+          return (
+            <section
+              key={point.id}
+              id={point.id}
+              className="min-h-screen flex items-center justify-start px-6 md:px-20 py-28"
+            >
+              <Section />
+            </section>
+          );
+        })}
       </main>
     </>
   );
