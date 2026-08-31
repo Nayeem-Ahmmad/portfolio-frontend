@@ -15,13 +15,6 @@ import Projects from './sections/Projects/Projects';
 import Achievements from './sections/Achievements/Achievements';
 import Contact from './sections/Contact/Contact';
 
-// Phase 06: the garden's journey stops now hold real portfolio content
-// instead of placeholders. Layout/positioning (ids, section spacing,
-// horizontal padding) stays here in App.jsx; each section owns its own
-// inner content and panel width, since Skills/Projects need far more room
-// than Home/About/Contact do. Sections use min-h-screen (not a fixed
-// h-screen) so content that runs long — the Skills grid, the Projects
-// list — can grow instead of clipping.
 const SECTION_COMPONENTS = {
   home: Home,
   about: About,

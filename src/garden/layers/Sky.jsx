@@ -37,22 +37,30 @@ export default function Sky({ tod }) {
           <stop offset="0%" stopColor="rgba(244,241,230,0.3)" />
           <stop offset="100%" stopColor="rgba(244,241,230,0)" />
         </radialGradient>
+        <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
       </defs>
 
       <rect x="0" y="0" width="1440" height="820" fill="url(#skyGradient)" />
 
-      {/* Stars — only visible once the sky has darkened toward dusk/night */}
+      {/* Stars — only visible once the sky has darkened toward dusk/night.
+          Each gets a soft glow halo behind it (same trick as the sun/moon)
+          so they read as genuinely bright points of light. */}
       <g opacity={tod.stars.opacity}>
         {STAR_POSITIONS.map((s, i) => (
-          <circle
-            key={i}
-            cx={s.x}
-            cy={s.y}
-            r={s.r}
-            fill="#f5f3e8"
-            className="star-twinkle"
-            style={{ animationDelay: `${(i % 5) * 0.6}s` }}
-          />
+          <g key={i}>
+            <circle cx={s.x} cy={s.y} r={s.r * 4} fill="url(#starGlow)" />
+            <circle
+              cx={s.x}
+              cy={s.y}
+              r={s.r * 1.3}
+              fill="#ffffff"
+              className="star-twinkle"
+              style={{ animationDelay: `${(i % 5) * 0.6}s` }}
+            />
+          </g>
         ))}
       </g>
 

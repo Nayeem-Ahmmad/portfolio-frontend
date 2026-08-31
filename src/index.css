@@ -89,6 +89,29 @@ a, button {
   animation: star-twinkle 3.4s ease-in-out infinite;
 }
 
+@keyframes bird-flypath {
+  0% {
+    transform: translate(-60px, var(--bird-y));
+  }
+  25% {
+    transform: translate(360px, calc(var(--bird-y) - 14px));
+  }
+  50% {
+    transform: translate(760px, calc(var(--bird-y) + 10px));
+  }
+  75% {
+    transform: translate(1140px, calc(var(--bird-y) - 12px));
+  }
+  100% {
+    transform: translate(1520px, var(--bird-y));
+  }
+}
+.bird-flypath {
+  animation-name: bird-flypath;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
 @keyframes firefly-flicker {
   0%,
   100% {

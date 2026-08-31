@@ -1,4 +1,5 @@
 import { SiCodeforces, SiCodechef, SiLeetcode } from 'react-icons/si';
+import CountUp from '../../components/CountUp/CountUp';
 
 // Every number here comes straight from Nayeem's resume — nothing
 // estimated or invented, per the brief's "never fake statistics" rule.
@@ -30,8 +31,8 @@ const CP_PROFILES = [
 ];
 
 const STATS = [
-  { value: '1500+', label: 'Problems solved' },
-  { value: '100+', label: 'Contests entered' },
+  { value: 1500, suffix: '+', label: 'Problems solved' },
+  { value: 100, suffix: '+', label: 'Contests entered' },
 ];
 
 const FOCUS_AREAS = ['Competitive Programming', 'C++', 'Data Structures', 'Algorithms', 'Problem Solving'];
@@ -48,11 +49,13 @@ export default function Achievements() {
         data structures and algorithms.
       </p>
 
-      {/* Headline numbers */}
+      {/* Headline numbers — count up once scrolled into view */}
       <div className="flex gap-8 mb-6">
         {STATS.map((s) => (
           <div key={s.label}>
-            <p className="text-2xl font-display text-paper">{s.value}</p>
+            <p className="text-2xl font-display text-paper">
+              <CountUp value={s.value} suffix={s.suffix} />
+            </p>
             <p className="text-xs text-fog uppercase tracking-wide">{s.label}</p>
           </div>
         ))}

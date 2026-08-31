@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { pathPoints } from '../../garden/pathPoints';
@@ -7,14 +8,35 @@ gsap.registerPlugin(ScrollToPlugin);
 // A minimal fixed dot-list, one per journey stop (Home, About, Skills...).
 // The active dot is whichever one matches the current scroll progress;
 // clicking a dot smooth-scrolls the page to that stop's position.
+// ArrowUp/ArrowDown do the same, moving one stop at a time — skipped
+// while the visitor is typing in the contact form so arrow keys still
+// work normally inside a text field.
 export default function NavDots({ activeId }) {
   const segmentCount = pathPoints.length - 1;
 
-  const handleClick = (index) => {
+  const scrollToIndex = (index) => {
+    const clamped = Math.min(Math.max(index, 0), segmentCount);
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const targetY = (index / segmentCount) * docHeight;
+    const targetY = (clamped / segmentCount) * docHeight;
     gsap.to(window, { duration: 1, scrollTo: { y: targetY }, ease: 'power2.inOut' });
   };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+
+      e.preventDefault();
+      const currentIndex = pathPoints.findIndex((p) => p.id === activeId);
+      const nextIndex = e.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1;
+      scrollToIndex(nextIndex);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeId]);
 
   return (
     <nav
@@ -27,7 +49,7 @@ export default function NavDots({ activeId }) {
           <button
             key={point.id}
             type="button"
-            onClick={() => handleClick(index)}
+            onClick={() => scrollToIndex(index)}
             aria-current={isActive ? 'true' : undefined}
             aria-label={point.label}
             className="group flex items-center gap-3 justify-end p-2 -m-2"
