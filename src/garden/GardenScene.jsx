@@ -1,10 +1,41 @@
+import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import Sky from './layers/Sky';
 import Mountains from './layers/Mountains';
 import Clouds from './layers/Clouds';
 import GroundScene from './layers/GroundScene';
 import { getCameraPosition } from '../utils/cameraPath';
-import { getTimeOfDayStyles, getTimeOfDayLabel } from '../utils/timeOfDay';
+import { getTimeOfDayStyles, getTimeOfDayLabel, getSunSafeApexY } from '../utils/timeOfDay';
+
+// Tracks the browser window's own size (not the SVG's) so the sun's arc
+// can be kept inside whatever the preserveAspectRatio="slice" crop
+// actually is right now, instead of a single guessed constant. Recomputes
+// on resize (debounced via rAF) so rotating a device or resizing a window
+// doesn't leave the sun in a stale, possibly-clipped position.
+function useSunSafeApexY() {
+  const [apexY, setApexY] = useState(() =>
+    typeof window === 'undefined' ? undefined : getSunSafeApexY(window.innerWidth, window.innerHeight)
+  );
+
+  useEffect(() => {
+    let frame = null;
+    const recompute = () => {
+      frame = null;
+      setApexY(getSunSafeApexY(window.innerWidth, window.innerHeight));
+    };
+    const onResize = () => {
+      if (frame === null) frame = requestAnimationFrame(recompute);
+    };
+    recompute();
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return apexY;
+}
 
 // Full-bleed garden viewport. `progress` (0–1, from useScrollProgress)
 // drives two things:
@@ -21,8 +52,9 @@ import { getTimeOfDayStyles, getTimeOfDayLabel } from '../utils/timeOfDay';
 // and losing the whole signature feature would be a worse trade-off.
 export default function GardenScene({ progress = 0 }) {
   const reduceMotion = useReducedMotion();
+  const sunApexY = useSunSafeApexY();
   const camera = getCameraPosition(progress);
-  const tod = getTimeOfDayStyles(progress);
+  const tod = getTimeOfDayStyles(progress, { sunApexY });
   const centerX = 720;
   const centerY = 500;
   const offsetX = reduceMotion ? 0 : camera.x - centerX;

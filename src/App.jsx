@@ -1,10 +1,8 @@
 import GardenScene from './garden/GardenScene';
 import Navbar from './components/Navbar/Navbar';
 import NavDots from './components/Navigation/NavDots';
-import JourneyLabel from './components/Navigation/JourneyLabel';
 import useScrollProgress from './hooks/useScrollProgress';
 import { getActiveSectionId } from './utils/cameraPath';
-import { getTimeOfDayLabel } from './utils/timeOfDay';
 import { pathPoints } from './garden/pathPoints';
 
 import Home from './sections/Home/Home';
@@ -28,7 +26,6 @@ const SECTION_COMPONENTS = {
 function App() {
   const progress = useScrollProgress();
   const activeId = getActiveSectionId(progress);
-  const activePoint = pathPoints.find((p) => p.id === activeId);
   const showScrollHint = progress < 0.03;
 
   return (
@@ -36,7 +33,6 @@ function App() {
       <GardenScene progress={progress} />
       <Navbar />
       <NavDots activeId={activeId} />
-      <JourneyLabel timeOfDay={getTimeOfDayLabel(progress)} sectionLabel={activePoint?.label} />
 
       {showScrollHint && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-20 text-xs uppercase tracking-[0.2em] text-fog animate-bounce">

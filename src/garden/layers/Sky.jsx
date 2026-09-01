@@ -43,7 +43,10 @@ export default function Sky({ tod }) {
         </radialGradient>
       </defs>
 
-      <rect x="0" y="0" width="1440" height="820" fill="url(#skyGradient)" />
+      {/* Widened past the 0–1440 viewBox (same margin trick as Mountains)
+          so this layer's own small parallax shift never exposes a bare
+          edge either. */}
+      <rect x="-200" y="0" width="1840" height="820" fill="url(#skyGradient)" />
 
       {/* Stars — only visible once the sky has darkened toward dusk/night.
           Each gets a soft glow halo behind it (same trick as the sun/moon)

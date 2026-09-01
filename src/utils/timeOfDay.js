@@ -18,6 +18,11 @@
 // snaps at the 20/45/65/80% boundaries — the crossfade between two periods
 // happens smoothly around each boundary instead of exactly on it.
 
+// Note: each period below still carries its own sunCx/sunCy, but those are
+// no longer used for the sun's position — getSunArcPosition() drives cx/cy
+// continuously now (see below). Left in place because sunR/sunOpacity/
+// sunColor/sunGlow on these same objects are still read per-period as before.
+
 export const TIME_OF_DAY_RANGES = {
   morning: [0, 0.2],
   day: [0.2, 0.45],
@@ -187,6 +192,93 @@ function lerp(a, b, t) {
   return a + (b - a) * t;
 }
 
+// Sun arc — Phase 05 revision.
+//
+// The sun used to just teleport between five hand-placed (cx, cy) points,
+// one per time-of-day period. That made it pop in already high in the sky
+// the instant the page loaded, instead of actually rising.
+//
+// This instead drives the sun along one continuous half-circle: it comes
+// up barely visible at the right edge, arcs smoothly up to its highest
+// point overhead, then comes back down and tucks out of sight past the
+// left edge — like a real sunrise-to-sunset sweep, driven by scroll.
+//
+// theta runs 0 → π over SUN_ARC_START..SUN_ARC_END of the scroll journey:
+//   theta = 0   → sunrise, right edge, low (near the mountain line)
+//   theta = π/2 → solar noon, dead center, near the top of the sky
+//   theta = π   → sunset, left edge, low again, then fades into night
+// cos(theta) drives left↔right, sin(theta) drives the up-arch.
+const SUN_ARC_START = 0;
+const SUN_ARC_END = 0.85; // matches the sunset → night fade window below
+const SUN_RIGHT_X = 1460; // mostly off the right edge — only a sliver shows at t=0
+const SUN_LEFT_X = -60; // mostly off the left edge — matches the "hides at the left corner" ask
+const SUN_HORIZON_Y = 380; // just above the mountain ridge line, not behind it
+
+// The apex (top of the arc) can't be a single fixed number — how high the
+// sun can safely go depends on the actual browser window's shape, because
+// the SVG uses preserveAspectRatio="xMidYMid slice": on a short/wide
+// window the slice crops some viewBox units off the very top before the
+// visitor ever sees them, and any apex sitting inside that crop band rides
+// off-screen. A static guess either clips on some windows (too high) or
+// looks flat/unrealistic on the rest (too conservative) — which is exactly
+// the back-and-forth this went through. So instead GardenScene measures
+// the real crop for the current window (getSunSafeApexY, below) and passes
+// that in every render; these two constants are just the bounds:
+const SUN_APEX_Y_DEEPEST = 120; // best case (little/no crop): a proper, full arc
+const SUN_APEX_Y_FALLBACK = 320; // used only before the real window size is known
+
+// Given the current viewport size, returns the lowest (safest) apex y that
+// still guarantees the sun's full disc stays inside the visible slice —
+// clamped so it never goes deeper than SUN_APEX_Y_DEEPEST even when the
+// window is tall enough to afford more, and never shallower than
+// SUN_APEX_Y_FALLBACK's general neighborhood on extreme windows.
+export function getSunSafeApexY(viewportWidth, viewportHeight) {
+  if (!viewportWidth || !viewportHeight) return SUN_APEX_Y_FALLBACK;
+  const viewBoxAspect = 1440 / 820;
+  const windowAspect = viewportWidth / viewportHeight;
+
+  let cropTop = 0;
+  if (windowAspect > viewBoxAspect) {
+    // Window is wider (relative to height) than the viewBox — "slice"
+    // scales to cover width, which makes the viewBox taller than the
+    // window, and crops the overflow evenly off the top and bottom.
+    const scale = viewportWidth / 1440;
+    const visibleViewBoxHeight = viewportHeight / scale;
+    cropTop = Math.max(0, (820 - visibleViewBoxHeight) / 2);
+  }
+
+  const MAX_SUN_RADIUS = 72; // largest sunR used across the time-of-day keyframes
+  const SAFE_MARGIN = 24; // a little breathing room past the sun's own edge
+  const safeApex = cropTop + MAX_SUN_RADIUS + SAFE_MARGIN;
+
+  return Math.min(Math.max(safeApex, SUN_APEX_Y_DEEPEST), SUN_APEX_Y_FALLBACK);
+}
+
+function getSunArcPosition(progress, apexY = SUN_APEX_Y_FALLBACK) {
+  const span = SUN_ARC_END - SUN_ARC_START;
+  const clamped = Math.min(Math.max(progress, SUN_ARC_START), SUN_ARC_END);
+  const theta = ((clamped - SUN_ARC_START) / span) * Math.PI;
+
+  const midX = (SUN_RIGHT_X + SUN_LEFT_X) / 2;
+  const ampX = (SUN_RIGHT_X - SUN_LEFT_X) / 2;
+  const ampY = SUN_HORIZON_Y - apexY;
+
+  return {
+    cx: midX + ampX * Math.cos(theta),
+    cy: SUN_HORIZON_Y - ampY * Math.sin(theta),
+  };
+}
+
+// Extra fade-in so the very start of the journey reads as "barely
+// visible, emerging" rather than snapping straight to full brightness —
+// on top of the sun already being mostly clipped off the right edge at
+// that point.
+function getSunRiseFade(progress) {
+  const FADE_END = 0.06;
+  if (progress >= FADE_END) return 1;
+  return lerp(0.35, 1, Math.max(progress, 0) / FADE_END);
+}
+
 // Accepts '#rrggbb' or 'rgba(r,g,b,a)' / 'rgb(r,g,b)'.
 function parseColor(str) {
   if (str[0] === '#') {
@@ -231,8 +323,9 @@ function lerpColor(c1, c2, t) {
  *   shadow: { length },            // 0–1 factor for shadow elongation
  * }
  */
-export function getTimeOfDayStyles(progress) {
+export function getTimeOfDayStyles(progress, options = {}) {
   const p = Math.min(Math.max(progress, 0), 1);
+  const sunApexY = options.sunApexY ?? SUN_APEX_Y_FALLBACK;
 
   let lo = KEYFRAMES[0];
   let hi = KEYFRAMES[KEYFRAMES.length - 1];
@@ -249,6 +342,8 @@ export function getTimeOfDayStyles(progress) {
   const a = lo.v;
   const b = hi.v;
 
+  const sunArc = getSunArcPosition(p, sunApexY);
+
   return {
     sky: {
       top: lerpColor(a.skyTop, b.skyTop, t),
@@ -256,10 +351,10 @@ export function getTimeOfDayStyles(progress) {
       bottom: lerpColor(a.skyBottom, b.skyBottom, t),
     },
     sun: {
-      cx: lerp(a.sunCx, b.sunCx, t),
-      cy: lerp(a.sunCy, b.sunCy, t),
+      cx: sunArc.cx,
+      cy: sunArc.cy,
       r: lerp(a.sunR, b.sunR, t),
-      opacity: lerp(a.sunOpacity, b.sunOpacity, t),
+      opacity: lerp(a.sunOpacity, b.sunOpacity, t) * getSunRiseFade(p),
       color: lerpColor(a.sunColor, b.sunColor, t),
       glow: lerpColor(a.sunGlow, b.sunGlow, t),
     },
