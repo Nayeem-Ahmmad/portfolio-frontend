@@ -23,6 +23,13 @@ const SECTION_COMPONENTS = {
   contact: Contact,
 };
 
+// Home/About/Skills keep the original left-aligned panel (over the
+// garden path). Experience onward moves to the right side instead —
+// left-aligned panels there sat directly over the sun/sky, so this keeps
+// that part of the scene visible while scrolling through the back half
+// of the journey.
+const RIGHT_ALIGNED_SECTIONS = new Set(['experience', 'projects', 'achievements', 'contact']);
+
 function App() {
   const progress = useScrollProgress();
   const activeId = getActiveSectionId(progress);
@@ -43,11 +50,14 @@ function App() {
       <main className="relative z-10">
         {pathPoints.map((point) => {
           const Section = SECTION_COMPONENTS[point.id];
+          const alignClass = RIGHT_ALIGNED_SECTIONS.has(point.id)
+            ? 'justify-end'
+            : 'justify-start';
           return (
             <section
               key={point.id}
               id={point.id}
-              className="min-h-screen flex items-center justify-start px-6 md:px-20 py-28"
+              className={`min-h-screen flex items-center ${alignClass} px-6 md:px-20 py-28`}
             >
               <Section />
             </section>
