@@ -6,7 +6,7 @@ export default function About() {
         A backend-leaning full-stack developer.
       </h2>
       <p className="text-fog text-sm md:text-base leading-relaxed">
-        I&apos;m Nayeem, a backend &amp; full-stack developer focused on building reliable web
+        I&apos;m Nayeem Ahmmad (also known as Md. Nayem Hawladar), a backend &amp; full-stack developer focused on building reliable web
         applications with Python and Django, paired with React on the frontend. I care most about
         clean API design, data modeling, and making the frontend and backend feel like one
         coherent product rather than two separate projects.

@@ -15,7 +15,7 @@ export default function Home() {
         Backend Developer
       </p>
       <h1 className="text-3xl md:text-5xl font-display text-paper leading-tight">
-        Hi, I&apos;m Nayeem.
+        Hi, I&apos;m Nayem Hawladar.
       </h1>
       <p className="text-fog mt-4 text-sm md:text-base leading-relaxed max-w-md">
         I build modern web applications using Python, Django and React.
