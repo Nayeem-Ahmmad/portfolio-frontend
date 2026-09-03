@@ -34,7 +34,7 @@ export default function ProjectCard({
 
   return (
     <motion.div
-      className="bg-panel/60 backdrop-blur-sm rounded-2xl overflow-hidden max-w-xl transition-shadow duration-300 hover:ring-1 hover:ring-moss/30"
+      className="bg-panel/60 backdrop-blur-sm rounded-2xl overflow-hidden w-full max-w-xl transition-shadow duration-300 hover:ring-1 hover:ring-moss/30"
       initial={reduceMotion ? false : { opacity: 0, y: 32 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
@@ -54,7 +54,7 @@ export default function ProjectCard({
           />
         </div>
       )}
-      <div className="px-6 py-6">
+      <div className="px-5 sm:px-6 py-5 sm:py-6">
         <h3 className="text-xl font-display text-paper">{title}</h3>
         <p className="text-fog text-sm mt-2 leading-relaxed">{description}</p>
 

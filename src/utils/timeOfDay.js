@@ -113,7 +113,10 @@ const SUNSET = {
   sunCy: 470,
   sunR: 72,
   sunOpacity: 1,
-  moonCx: 300,
+  // Nudged right from the original 300 so the moon's rightward drift
+  // through sunset → night → deep night stays smooth (300 → 420 → 460)
+  // instead of holding here then jumping at the night keyframes below.
+  moonCx: 380,
   moonCy: 160,
   moonR: 40,
   moonOpacity: 0.15,
@@ -137,7 +140,12 @@ const NIGHT = {
   sunCy: 600,
   sunR: 60,
   sunOpacity: 0,
-  moonCx: 220,
+  // Moved from 220 to clear the top-left corner: from Experience through
+  // Contact the navbar/dots flip to that same corner (see App.jsx's
+  // FLIPPED_LAYOUT_IDS), and this is one of the two keyframes actually
+  // visible while that's on screen — the old value sat right underneath
+  // the navbar text/button.
+  moonCx: 420,
   moonCy: 130,
   moonR: 46,
   moonOpacity: 0.95,
@@ -161,7 +169,10 @@ const NIGHT_DEEP = {
   sunCy: 610,
   sunR: 60,
   sunOpacity: 0,
-  moonCx: 200,
+  // Same fix as NIGHT above, and the more important of the two — this is
+  // the state actually on screen once scrolled all the way to Contact,
+  // where the flipped navbar/dots corner overlap was reported.
+  moonCx: 460,
   moonCy: 110,
   moonR: 46,
   moonOpacity: 1,

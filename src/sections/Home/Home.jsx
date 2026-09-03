@@ -10,7 +10,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-8 py-8 max-w-lg">
+    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-5 sm:px-6 md:px-8 py-6 sm:py-7 md:py-8 max-w-lg w-full sm:w-auto">
       <p className="uppercase tracking-[0.3em] text-xs text-moss mb-3">
         Backend Developer
       </p>

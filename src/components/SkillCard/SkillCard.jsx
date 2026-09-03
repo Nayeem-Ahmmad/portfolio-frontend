@@ -2,7 +2,7 @@
 // technology list. Plain text only, no fake percentage bars, per the brief.
 export default function SkillCard({ title, skills }) {
   return (
-    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-6 py-5">
+    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-5 sm:px-6 py-4 sm:py-5">
       <p className="uppercase tracking-[0.2em] text-xs text-moss mb-3">{title}</p>
       <ul className="flex flex-wrap gap-2">
         {skills.map((skill) => (

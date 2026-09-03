@@ -1,6 +1,6 @@
 export default function About() {
   return (
-    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-8 py-8 max-w-lg">
+    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-5 sm:px-6 md:px-8 py-6 sm:py-7 md:py-8 max-w-lg w-full sm:w-auto">
       <p className="uppercase tracking-[0.2em] text-xs text-moss mb-2">About</p>
       <h2 className="text-2xl md:text-3xl font-display text-paper mb-4">
         A backend-leaning full-stack developer.

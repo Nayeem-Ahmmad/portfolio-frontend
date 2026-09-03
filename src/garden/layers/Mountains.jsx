@@ -26,6 +26,14 @@ export default function Mountains() {
         fill="var(--mountain-near)"
         opacity="0.75"
       />
+
+      {/* Ground extension, same color as the near ridge's own flat base
+          so it continues seamlessly with no visible seam at y=820. This
+          is only ever seen in the letterbox gap that preserveAspectRatio
+          ="meet" leaves below the artwork on a portrait phone — see the
+          matching note on Sky's rect for why that gap needs filling at
+          all instead of being left transparent. */}
+      <rect x="-200" y="820" width="1840" height="1600" fill="var(--mountain-near)" opacity="0.75" />
     </g>
   );
 }

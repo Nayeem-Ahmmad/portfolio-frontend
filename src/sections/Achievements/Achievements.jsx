@@ -39,7 +39,7 @@ const FOCUS_AREAS = ['Competitive Programming', 'C++', 'Data Structures', 'Algor
 
 export default function Achievements() {
   return (
-    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-8 py-8 max-w-lg">
+    <div className="bg-panel/60 backdrop-blur-sm rounded-2xl px-5 sm:px-6 md:px-8 py-6 sm:py-7 md:py-8 max-w-lg w-full sm:w-auto">
       <p className="uppercase tracking-[0.2em] text-xs text-moss mb-2">Problem Solving</p>
       <h2 className="text-2xl md:text-3xl font-display text-paper mb-3">
         Sharpening the fundamentals.
@@ -72,7 +72,9 @@ export default function Achievements() {
         ))}
       </ul>
 
-      {/* Platform ratings, each linking to the real profile */}
+      {/* Platform ratings, each linking to the real profile. flex-wrap +
+          the rating dropping to its own line below ~360px keeps the
+          handle from getting crushed next to a long rating string. */}
       <div className="flex flex-col gap-3 mb-6">
         {CP_PROFILES.map(({ id, label, handle, rating, url, Icon }) => (
           <a
@@ -80,14 +82,14 @@ export default function Achievements() {
             href={url}
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-between gap-3 text-sm text-fog hover:text-moss transition-colors"
+            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm text-fog hover:text-moss transition-colors"
           >
-            <span className="flex items-center gap-3">
+            <span className="flex items-center gap-2 sm:gap-3 min-w-0">
               <Icon aria-hidden="true" className="text-lg shrink-0" />
-              <span className="text-paper">{label}</span>
-              <span className="text-fog/70">@{handle}</span>
+              <span className="text-paper truncate">{label}</span>
+              <span className="text-fog/70 truncate">@{handle}</span>
             </span>
-            <span className="text-xs text-moss whitespace-nowrap">{rating}</span>
+            <span className="text-xs text-moss whitespace-nowrap ml-auto sm:ml-0">{rating}</span>
           </a>
         ))}
       </div>

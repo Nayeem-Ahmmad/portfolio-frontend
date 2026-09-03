@@ -24,7 +24,14 @@ export default function Sky({ tod }) {
   return (
     <g>
       <defs>
-        <linearGradient id="skyGradient" x1="0" y1="0" x2="0" y2="1">
+        {/* userSpaceOnUse + a fixed y1/y2 keeps the color transition
+            anchored to the original y=0..820 composition regardless of
+            how far the rect itself gets extended below (see the rect
+            below) — with the default "pad" spread, anything drawn above
+            y=0 or below y=820 just holds the nearest stop's flat color
+            instead of the whole gradient re-stretching across the larger
+            box, which is what objectBoundingBox units would otherwise do. */}
+        <linearGradient id="skyGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="820">
           <stop offset="0%" stopColor={tod.sky.top} />
           <stop offset="55%" stopColor={tod.sky.mid} />
           <stop offset="100%" stopColor={tod.sky.bottom} />
@@ -43,10 +50,16 @@ export default function Sky({ tod }) {
         </radialGradient>
       </defs>
 
-      {/* Widened past the 0–1440 viewBox (same margin trick as Mountains)
-          so this layer's own small parallax shift never exposes a bare
-          edge either. */}
-      <rect x="-200" y="0" width="1840" height="820" fill="url(#skyGradient)" />
+      {/* Extended well past the 0–1440 x 0–820 viewBox on every side
+          (same idea as Mountains' margin, just bigger). This one isn't
+          only about the parallax shift anymore — on a portrait phone
+          GardenScene switches to preserveAspectRatio="meet" so the sun
+          and mountains don't get cropped off sideways, and "meet" leaves
+          a gap above/below the artwork instead. Without this extension
+          that gap rendered as flat black (the page background showing
+          through); with it, the sky gradient just keeps going, so the
+          whole screen reads as one continuous sky edge-to-edge. */}
+      <rect x="-200" y="-1200" width="1840" height="3400" fill="url(#skyGradient)" />
 
       {/* Stars — only visible once the sky has darkened toward dusk/night.
           Each gets a soft glow halo behind it (same trick as the sun/moon)

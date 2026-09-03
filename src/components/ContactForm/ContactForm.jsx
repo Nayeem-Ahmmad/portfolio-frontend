@@ -72,8 +72,12 @@ export default function ContactForm() {
     );
   }
 
+  // text-base (16px) on the inputs, not text-sm — anything smaller makes
+  // iOS Safari auto-zoom the page on focus, which is jarring on a
+  // full-bleed scene like this. Drops back to text-sm at sm+ where that
+  // zoom behavior doesn't happen anyway.
   const fieldClass =
-    'w-full bg-ink/60 border border-fog/20 focus:border-moss/60 rounded-lg px-4 py-3 text-sm text-paper placeholder:text-fog/50 outline-none transition-colors';
+    'w-full bg-ink/60 border border-fog/20 focus:border-moss/60 rounded-lg px-4 py-3 text-base sm:text-sm text-paper placeholder:text-fog/50 outline-none transition-colors';
 
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
